@@ -30,13 +30,10 @@ get '/*' do
   uri.path= "/index.html" if uri.path == "/"
   content_type Mime::Type.lookup_by_extension(File.extname(uri.path[1..-1])[1..-1]).to_s
 
-  puts uri.path
   key = "./tmp/cache/#{uri.host}#{uri.path}"
   if File.exists?(key)
-    puts "cache!"
     response=IO.read(key) 
   else
-    puts uri.path
     response = Site.first.get(uri.path)
     FileUtils.mkdir_p(Pathname.new(key).dirname)
     File.open(key, 'w') {|f| f.write(response) }  
